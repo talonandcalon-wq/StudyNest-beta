@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>StudyNest — Student Learning Hub</title>
+<meta name="description" content="StudyNest: Your all-in-one student portal for grades, study tools, math, science, writing, research, coding, and more.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e3a8a'/%3E%3Ccircle cx='32' cy='26' r='10' fill='%2360a5fa' opacity='.3'/%3E%3Cpath d='M18 42 Q32 28 46 42' fill='none' stroke='%2393c5fd' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='24' r='5' fill='%23dbeafe'/%3E%3Cpath d='M26 32 L32 38 L38 32' fill='none' stroke='%2360a5fa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --nav-bg: #0a1628;
+  --nav-h: 64px;
+  --sidebar-w: 230px;
+  --accent: #1d4ed8;
+  --accent2: #2563eb;
+  --accent3: #60a5fa;
+  --accent-light: #eff6ff;
+  --accent-dark: #1e40af;
+  --green: #059669;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --white: #ffffff;
+  --card-r: 18px;
+  --sh-sm: 0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --sh-md: 0 4px 20px rgba(29,78,216,0.1);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html {
+  height:100%;
+  width:100%;
+  overflow:hidden;
+}
+body {
+  font-family:'DM Sans', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  width:100vw;
+  overflow:hidden;
+  position:fixed;
+  top:0; left:0;
+}
+
+/* ── TOP NAV ── */
+.topnav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  background:linear-gradient(135deg, #0a1628 0%, #0f2350 60%, #1a3a7a 100%);
+  height:var(--nav-h);
+  display:flex; align-items:center;
+  padding:0 24px; gap:16px;
+  box-shadow:0 2px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(29,78,216,0.2);
+}
+
+/* ── LOGO ── */
+.nav-brand {
+  display:flex; align-items:center; gap:12px; flex-shrink:0; text-decoration:none;
+}
+.logo-mark {
+  width:42px; height:42px;
+  flex-shrink:0;
+  position:relative;
+}
+.logo-mark svg { width:100%; height:100%; }
+.nav-brand-name {
+  color:#fff;
+  font-family:'Syne', sans-serif;
+  font-size:1.25rem;
+  font-weight:800;
+  letter-spacing:-0.5px;
+  line-height:1;
+}
+.nav-brand-name .study { color:#e2d9f3; }
+.nav-brand-name .nest { color:#60a5fa; }
+.nav-brand-sub {
+  font-family:'DM Sans', sans-serif;
+  font-size:0.6rem;
+  font-weight:500;
+  color:rgba(96,165,250,0.6);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-top:2px;
+}
+
+.school-label {
+  color:rgba(255,255,255,0.35);
+  font-size:0.75rem; font-weight:500;
+  border-left:1px solid rgba(255,255,255,0.12);
+  padding-left:16px; margin-left:4px;
+  white-space:nowrap;
+  letter-spacing:0.3px;
+}
+.nav-spacer { flex:1; }
+.search-box {
+  display:flex; align-items:center; gap:9px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(96,165,250,0.2);
+  border-radius:12px;
+  padding:9px 16px;
+  transition:all 0.2s;
+  max-width:260px; flex:1;
+  backdrop-filter:blur(10px);
+}
+.search-box:focus-within {
+  background:rgba(255,255,255,0.12);
+  border-color:rgba(96,165,250,0.55);
+  box-shadow:0 0 0 3px rgba(29,78,216,0.15);
+}
+.search-box input {
+  background:none; border:none; outline:none;
+  color:#fff; font-family:'DM Sans',sans-serif; font-size:0.86rem;
+  width:100%; min-width:0;
+}
+.search-box input::placeholder { color:rgba(255,255,255,0.3); }
+.hamburger {
+  display:none;
+  background:none; border:none; cursor:pointer;
+  color:#fff; font-size:1.4rem; padding:4px; line-height:1;
+}
+
+/* ── LAYOUT ── */
+.layout {
+  display:flex;
+  flex:1;
+  min-height:0;
+  margin-top:var(--nav-h);
+  width:100%;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:var(--sidebar-w);
+  min-width:var(--sidebar-w);
+  background:var(--white);
+  border-right:1px solid var(--border);
+  padding:20px 0 32px;
+  position:fixed;
+  top:var(--nav-h);
+  left:0;
+  height:calc(100vh - var(--nav-h));
+  overflow-y:auto; overflow-x:hidden;
+  transition:transform 0.25s ease;
+  z-index:100;
+}
+.sidebar::-webkit-scrollbar { width:3px; }
+.sidebar::-webkit-scrollbar-thumb { background:#bfdbfe; border-radius:4px; }
+
+.sidebar-section-label {
+  font-size:0.58rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:1.8px; color:#93c5fd;
+  padding:16px 18px 6px;
+  font-family:'Syne', sans-serif;
+}
+.sidebar-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 18px;
+  color:#1e3a5f; font-size:0.81rem; font-weight:500;
+  cursor:pointer; text-decoration:none;
+  border-left:3px solid transparent;
+  transition:all 0.14s;
+  border-radius:0 12px 12px 0;
+  margin:1px 10px 1px 0;
+}
+.sidebar-item:hover, .sidebar-item.active {
+  background:linear-gradient(90deg, #eff6ff, #dbeafe);
+  border-left-color:var(--accent);
+  color:var(--accent);
+}
+.sidebar-item .si { font-size:0.95rem; flex-shrink:0; }
+
+/* ── CONTENT ── */
+.content {
+  flex:1;
+  margin-left:var(--sidebar-w);
+  padding:28px 32px 80px;
+  overflow-y:auto;
+  width:calc(100% - var(--sidebar-w));
+  min-height:calc(100vh - var(--nav-h));
+}
+
+/* ── HERO BANNER ── */
+.hero-banner {
+  background:linear-gradient(135deg, #0f2350 0%, #1e3a8a 45%, #1d4ed8 80%, #1d4ed8 100%);
+  border-radius:22px;
+  padding:28px 32px;
+  margin-bottom:26px;
+  display:flex; align-items:center; gap:24px;
+  box-shadow:0 12px 40px rgba(29,78,216,0.35), 0 0 0 1px rgba(96,165,250,0.15);
+  position:relative; overflow:hidden;
+}
+.hero-banner::before {
+  content:'';
+  position:absolute; top:-40px; right:-40px;
+  width:220px; height:220px;
+  background:radial-gradient(circle, rgba(96,165,250,0.18) 0%, transparent 70%);
+  border-radius:50%;
+}
+.hero-banner::after {
+  content:'';
+  position:absolute; bottom:-60px; right:60px;
+  width:160px; height:160px;
+  background:radial-gradient(circle, rgba(29,78,216,0.12) 0%, transparent 70%);
+  border-radius:50%;
+}
+.hero-logo-wrap {
+  flex-shrink:0;
+  width:68px; height:68px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:18px;
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(10px);
+}
+.hero-logo-wrap svg { width:48px; height:48px; }
+.hero-text h1 {
+  font-family:'Syne', sans-serif;
+  color:#fff; font-size:1.55rem; font-weight:800;
+  margin-bottom:6px;
+  letter-spacing:-0.3px;
+}
+.hero-text p {
+  color:rgba(255,255,255,0.65); font-size:0.84rem; font-weight:400;
+  line-height:1.55;
+  max-width:480px;
+}
+.hero-pill {
+  margin-left:auto; flex-shrink:0;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:50px;
+  padding:8px 18px;
+  color:rgba(255,255,255,0.8);
+  font-size:0.75rem; font-weight:600;
+  letter-spacing:0.3px;
+  white-space:nowrap;
+  backdrop-filter:blur(10px);
+}
+
+/* ── SECTION ── */
+.section {
+  margin-bottom:24px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--card-r);
+  padding:20px 22px 22px;
+  box-shadow:var(--sh-sm);
+  transition:box-shadow 0.2s;
+}
+.section:hover { box-shadow:var(--sh-md); }
+.section-head {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:16px;
+}
+.section-head h2 {
+  font-size:0.92rem; font-weight:700; color:var(--text);
+  white-space:nowrap;
+  font-family:'Syne', sans-serif;
+}
+.section-head-line { flex:1; height:1px; background:linear-gradient(90deg, var(--border), transparent); }
+.section-count {
+  font-size:0.66rem; font-weight:700; color:#b0a8c8;
+  background:#eff6ff; padding:2px 9px; border-radius:20px;
+  border:1px solid #dbeafe;
+}
+
+/* ── TILE GRID ── */
+.tile-grid {
+  display:flex; flex-wrap:wrap; gap:11px;
+}
+
+/* ── TILE ── */
+.tile {
+  display:flex; flex-direction:column; align-items:center;
+  width:90px; text-decoration:none; color:var(--text);
+  cursor:pointer; transition:transform 0.16s;
+  position:relative;
+}
+.tile:hover { transform:translateY(-5px); }
+.tile:hover .tile-icon { box-shadow:0 10px 24px rgba(0,0,0,0.15); }
+.tile-icon {
+  width:76px; height:76px;
+  border-radius:18px;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  box-shadow:var(--sh-sm);
+  margin-bottom:8px;
+  flex-shrink:0;
+  transition:box-shadow 0.16s, transform 0.16s;
+}
+.tile-icon img {
+  width:56%; height:56%;
+  object-fit:contain;
+}
+.tile-icon .fallback-letter {
+  font-size:1.7rem; font-weight:900; color:#fff;
+  font-family:'Syne', sans-serif;
+}
+.tile-label {
+  font-size:0.69rem; font-weight:600;
+  text-align:center; line-height:1.3;
+  max-width:86px; color:#1e3a5f;
+}
+
+/* ── HEART BUTTON ── */
+.heart-btn {
+  position:absolute; top:4px; right:4px;
+  background:rgba(255,255,255,0.95);
+  border:none; border-radius:50%;
+  width:22px; height:22px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:0.68rem;
+  opacity:0; transition:opacity 0.15s, transform 0.15s;
+  z-index:10; padding:0; line-height:1;
+  box-shadow:0 1px 6px rgba(0,0,0,0.18);
+}
+.tile:hover .heart-btn { opacity:1; }
+.heart-btn.hearted { opacity:1; color:#ef4444; }
+.heart-btn:not(.hearted) { color:#94a3b8; }
+.heart-btn:hover { transform:scale(1.2); }
+
+/* ── QUICK LINKS BAR ── */
+.quick-bar {
+  display:flex; flex-wrap:wrap; gap:7px;
+}
+.quick-chip {
+  display:inline-flex; align-items:center; gap:7px;
+  background:#faf8ff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:7px 14px;
+  font-size:0.77rem; font-weight:600;
+  text-decoration:none; color:#1e3a5f;
+  transition:all 0.14s;
+  box-shadow:var(--sh-sm);
+}
+.quick-chip:hover { border-color:var(--accent); background:var(--accent-light); color:var(--accent); transform:translateY(-2px); }
+.quick-chip img { width:17px; height:17px; object-fit:contain; border-radius:4px; }
+
+/* ── FAVORITES SECTION ── */
+#favorites.section {
+  background:linear-gradient(135deg, #faf8ff, #f3f0ff);
+  border:1.5px solid #bfdbfe;
+}
+#favorites .section-head h2 { color:#1e40af; }
+#favorites-empty {
+  color:#60a5fa; font-size:0.8rem;
+  padding:4px 0 2px; font-style:italic;
+}
+
+/* ── FOOTER ── */
+.site-footer {
+  text-align:center;
+  padding:16px 20px;
+  font-size:0.72rem;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  background:var(--white);
+  margin-left:var(--sidebar-w);
+}
+.site-footer .brand-link {
+  color:var(--accent);
+  font-weight:700;
+  cursor:pointer;
+  text-decoration:none;
+  background:none; border:none; padding:0;
+  font-size:inherit;
+  font-family:inherit;
+  transition:color 0.15s;
+}
+.site-footer .brand-link:hover { color:var(--accent2); }
+
+.sidebar-overlay {
+  display:none;
+  position:fixed; inset:0; z-index:90;
+  background:rgba(0,0,0,0.5);
+}
+
+/* ── SCROLL TO TOP ── */
+.scroll-top {
+  position:fixed; bottom:28px; right:28px;
+  width:42px; height:42px;
+  background:linear-gradient(135deg, #1d4ed8, #2563eb);
+  color:#fff; border:none; border-radius:12px;
+  font-size:1.1rem; cursor:pointer;
+  box-shadow:0 4px 16px rgba(29,78,216,0.4);
+  display:none; align-items:center; justify-content:center;
+  transition:all 0.15s; z-index:150;
+}
+.scroll-top.visible { display:flex; }
+.scroll-top:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(29,78,216,0.5); }
+
+/* ─── ADMIN MODAL ─── */
+.admin-overlay {
+  display:none;
+  position:fixed; inset:0; z-index:1000;
+  background:rgba(10,5,25,0.85);
+  backdrop-filter:blur(12px);
+  align-items:center; justify-content:center;
+}
+.admin-overlay.open { display:flex; }
+.admin-modal {
+  background:linear-gradient(145deg, #0f0a1e, #1a0d36);
+  border:1px solid rgba(29,78,216,0.35);
+  border-radius:24px;
+  padding:40px 44px;
+  width:100%; max-width:400px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(96,165,250,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+  position:relative;
+  animation:modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalIn {
+  from { opacity:0; transform:scale(0.88) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+.admin-modal-logo {
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:24px;
+}
+.admin-modal-logo svg { width:52px; height:52px; }
+.admin-modal h2 {
+  font-family:'Syne', sans-serif;
+  color:#fff;
+  font-size:1.2rem; font-weight:800;
+  text-align:center; margin-bottom:4px;
+  letter-spacing:-0.3px;
+}
+.admin-modal .admin-sub {
+  color:rgba(96,165,250,0.6);
+  font-size:0.72rem; text-align:center;
+  letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:28px; font-weight:500;
+}
+.admin-field {
+  margin-bottom:16px;
+}
+.admin-field label {
+  display:block;
+  color:rgba(255,255,255,0.5);
+  font-size:0.7rem; font-weight:600;
+  letter-spacing:1.2px; text-transform:uppercase;
+  margin-bottom:7px;
+}
+.admin-field input {
+  width:100%;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(29,78,216,0.3);
+  border-radius:10px;
+  padding:11px 14px;
+  color:#fff;
+  font-family:'DM Sans', sans-serif;
+  font-size:0.9rem;
+  outline:none;
+  transition:all 0.15s;
+}
+.admin-field input:focus {
+  border-color:rgba(96,165,250,0.6);
+  background:rgba(255,255,255,0.08);
+  box-shadow:0 0 0 3px rgba(29,78,216,0.2);
+}
+.admin-field input::placeholder { color:rgba(255,255,255,0.2); }
+.admin-error {
+  color:#f87171;
+  font-size:0.75rem; text-align:center;
+  margin-top:-8px; margin-bottom:12px;
+  min-height:18px;
+}
+.admin-btn {
+  width:100%;
+  background:linear-gradient(135deg, #1d4ed8, #2563eb);
+  border:none; border-radius:11px;
+  padding:13px;
+  color:#fff; font-family:'Syne', sans-serif;
+  font-size:0.9rem; font-weight:700;
+  cursor:pointer; letter-spacing:0.3px;
+  transition:all 0.15s;
+  box-shadow:0 4px 16px rgba(29,78,216,0.35);
+  margin-top:4px;
+}
+.admin-btn:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(29,78,216,0.5); }
+.admin-close {
+  position:absolute; top:16px; right:18px;
+  background:none; border:none; color:rgba(255,255,255,0.3);
+  font-size:1.3rem; cursor:pointer; line-height:1;
+  transition:color 0.15s;
+}
+.admin-close:hover { color:rgba(255,255,255,0.7); }
+
+/* ─── ADMIN PANEL ─── */
+.admin-panel-overlay {
+  display:none;
+  position:fixed; inset:0; z-index:900;
+  background:linear-gradient(135deg, #0a0514, #100830);
+  overflow-y:auto;
+  animation:fadeIn 0.3s ease;
+}
+.admin-panel-overlay.open { display:block; }
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+.admin-panel-nav {
+  background:linear-gradient(135deg, #0f0a1e, #1a0d36);
+  border-bottom:1px solid rgba(29,78,216,0.2);
+  padding:0 32px;
+  height:64px;
+  display:flex; align-items:center; gap:20px;
+  position:sticky; top:0; z-index:10;
+  box-shadow:0 2px 20px rgba(0,0,0,0.5);
+}
+.admin-panel-nav-logo {
+  display:flex; align-items:center; gap:10px;
+}
+.admin-panel-nav-logo svg { width:36px; height:36px; }
+.admin-panel-nav-title {
+  font-family:'Syne', sans-serif;
+  color:#fff; font-size:1rem; font-weight:800;
+}
+.admin-panel-nav-title span { color:#60a5fa; }
+.admin-nav-spacer { flex:1; }
+.admin-panel-close-btn {
+  background:rgba(239,68,68,0.12);
+  border:1px solid rgba(239,68,68,0.25);
+  border-radius:9px;
+  padding:7px 16px;
+  color:#f87171; font-family:'Syne', sans-serif;
+  font-size:0.78rem; font-weight:700;
+  cursor:pointer; letter-spacing:0.5px;
+  transition:all 0.15s;
+}
+.admin-panel-close-btn:hover { background:rgba(239,68,68,0.2); }
+.admin-panel-body {
+  padding:40px 48px 80px;
+  max-width:1200px; margin:0 auto;
+}
+.admin-welcome {
+  margin-bottom:36px;
+}
+.admin-welcome h1 {
+  font-family:'Syne', sans-serif;
+  color:#fff; font-size:1.8rem; font-weight:800;
+  margin-bottom:8px;
+  letter-spacing:-0.5px;
+}
+.admin-welcome p {
+  color:rgba(96,165,250,0.65);
+  font-size:0.87rem; line-height:1.6;
+}
+.admin-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:18px;
+  margin-bottom:32px;
+}
+.admin-card {
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(29,78,216,0.2);
+  border-radius:16px;
+  padding:22px 24px;
+  transition:all 0.2s;
+}
+.admin-card:hover { border-color:rgba(96,165,250,0.4); background:rgba(255,255,255,0.06); transform:translateY(-2px); }
+.admin-card-icon {
+  font-size:1.6rem; margin-bottom:10px;
+}
+.admin-card h3 {
+  font-family:'Syne', sans-serif;
+  color:#fff; font-size:0.95rem; font-weight:700;
+  margin-bottom:6px;
+}
+.admin-card p {
+  color:rgba(255,255,255,0.45);
+  font-size:0.78rem; line-height:1.5;
+}
+.admin-stat-badge {
+  display:inline-block;
+  background:rgba(29,78,216,0.25);
+  border:1px solid rgba(96,165,250,0.2);
+  border-radius:6px;
+  padding:2px 9px;
+  color:#60a5fa; font-size:0.72rem; font-weight:700;
+  margin-top:10px;
+}
+.admin-section-title {
+  font-family:'Syne', sans-serif;
+  color:rgba(255,255,255,0.7);
+  font-size:0.65rem; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:14px; margin-top:32px;
+}
+.admin-resource-list {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+  gap:10px;
+}
+.admin-resource-item {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(29,78,216,0.15);
+  border-radius:12px;
+  padding:14px 16px;
+  text-decoration:none;
+  display:flex; align-items:center; gap:11px;
+  transition:all 0.15s;
+}
+.admin-resource-item:hover { border-color:rgba(96,165,250,0.35); background:rgba(255,255,255,0.07); }
+.admin-resource-icon { font-size:1.25rem; flex-shrink:0; }
+.admin-resource-name {
+  color:#e2d9f3; font-size:0.8rem; font-weight:600;
+}
+.admin-resource-desc {
+  color:rgba(255,255,255,0.35);
+  font-size:0.68rem; margin-top:1px;
+}
+.admin-ok-table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+}
+.admin-ok-table th {
+  font-family:'Syne', sans-serif;
+  color:rgba(255,255,255,0.4);
+  font-size:0.66rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:1.2px;
+  padding:8px 12px; text-align:left;
+  border-bottom:1px solid rgba(29,78,216,0.15);
+}
+.admin-ok-table td {
+  color:rgba(255,255,255,0.75);
+  font-size:0.78rem; padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.admin-ok-table tr:last-child td { border-bottom:none; }
+.admin-ok-table tr:hover td { background:rgba(255,255,255,0.03); }
+.ok-badge {
+  display:inline-block;
+  background:rgba(5,150,105,0.18);
+  border:1px solid rgba(5,150,105,0.3);
+  color:#34d399; border-radius:6px;
+  padding:1px 8px; font-size:0.68rem; font-weight:700;
+}
+.warn-badge {
+  display:inline-block;
+  background:rgba(245,158,11,0.15);
+  border:1px solid rgba(245,158,11,0.3);
+  color:#fbbf24; border-radius:6px;
+  padding:1px 8px; font-size:0.68rem; font-weight:700;
+}
+
+/* ════════ MOBILE ≤ 768px ════════ */
+@media(max-width:768px){
+  :root { --nav-h:56px; }
+  .hamburger { display:block; }
+  .school-label { display:none; }
+  .nav-brand-sub { display:none; }
+  .search-box { flex:1; min-width:0; max-width:none; }
+  .sidebar {
+    position:fixed; top:0; left:0; height:100%;
+    transform:translateX(-100%);
+    box-shadow:4px 0 30px rgba(0,0,0,0.35);
+    z-index:200;
+  }
+  .sidebar.open { transform:translateX(0); }
+  .sidebar-overlay.open { display:block; }
+  .content { margin-left:0; padding:14px 12px 80px; width:100%; }
+  .hero-banner { padding:18px 20px; gap:14px; }
+  .hero-text h1 { font-size:1.15rem; }
+  .tile { width:76px; }
+  .tile-icon { width:64px; height:64px; border-radius:15px; }
+  .tile-grid { gap:9px; }
+  .tile-label { font-size:0.66rem; }
+  .hero-pill { display:none; }
+  .site-footer { margin-left:0; }
+  .admin-panel-body { padding:24px 18px 60px; }
+  .admin-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+  <a class="nav-brand" href="#">
+    <div class="logo-mark">
+      <svg viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoG1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e40af"/>
+            <stop offset="100%" stop-color="#2563eb"/>
+          </linearGradient>
+          <linearGradient id="logoG2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#60a5fa"/>
+            <stop offset="100%" stop-color="#60a5fa"/>
+          </linearGradient>
+        </defs>
+        <!-- Rounded square bg -->
+        <rect width="42" height="42" rx="11" fill="url(#logoG1)"/>
+        <!-- Nest arc base -->
+        <path d="M9 30 Q21 16 33 30" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Graduation cap -->
+        <polygon points="21,9 33,15 21,21 9,15" fill="url(#logoG2)" opacity="0.95"/>
+        <rect x="28" y="15" width="2.5" height="8" rx="1.2" fill="rgba(255,255,255,0.6)"/>
+        <circle cx="29.25" cy="24" r="2.5" fill="rgba(255,255,255,0.55)"/>
+        <!-- Book lines -->
+        <rect x="14" y="24" width="14" height="10" rx="2.5" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+        <line x1="21" y1="25" x2="21" y2="33" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="16" y1="27.5" x2="19.5" y2="27.5" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" stroke-linecap="round"/>
+        <line x1="22.5" y1="27.5" x2="26" y2="27.5" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" stroke-linecap="round"/>
+        <line x1="16" y1="30" x2="19.5" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="0.9" stroke-linecap="round"/>
+        <line x1="22.5" y1="30" x2="26" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="0.9" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="nav-brand-name"><span class="study">Study</span><span class="nest">Nest</span></div>
+      <div class="nav-brand-sub">Student Hub</div>
+    </div>
+  </a>
+  <span class="school-label">Oklahoma Learning Portal</span>
+  <div class="nav-spacer"></div>
+  <div class="search-box">
+    <svg width="13" height="13" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search-input" placeholder="Search tools…" autocomplete="off">
+  </div>
+</nav>
+
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section-label">Navigate</div>
+    <a class="sidebar-item" href="#favorites" onclick="goTo('favorites')"><span class="si">❤️</span> Favorites</a>
+    <a class="sidebar-item active" href="#grades" onclick="goTo('grades')"><span class="si">📊</span> Grades &amp; School</a>
+    <a class="sidebar-item" href="#study" onclick="goTo('study')"><span class="si">📚</span> Study Tools</a>
+    <a class="sidebar-item" href="#math" onclick="goTo('math')"><span class="si">🧮</span> Math</a>
+    <a class="sidebar-item" href="#science" onclick="goTo('science')"><span class="si">🔬</span> Science</a>
+    <a class="sidebar-item" href="#writing" onclick="goTo('writing')"><span class="si">✍️</span> Writing</a>
+    <a class="sidebar-item" href="#research" onclick="goTo('research')"><span class="si">🔎</span> Research</a>
+    <a class="sidebar-item" href="#coding" onclick="goTo('coding')"><span class="si">💻</span> Coding</a>
+    <a class="sidebar-item" href="#language" onclick="goTo('language')"><span class="si">🌍</span> Language</a>
+    <a class="sidebar-item" href="#creative" onclick="goTo('creative')"><span class="si">🎨</span> Creative</a>
+    <a class="sidebar-item" href="#google" onclick="goTo('google')"><span class="si">🔵</span> Google Apps</a>
+    <a class="sidebar-item" href="#video" onclick="goTo('video')"><span class="si">▶️</span> Video &amp; Media</a>
+    <a class="sidebar-item" href="#games" onclick="goTo('games')"><span class="si">🎮</span> Learning Games</a>
+    <a class="sidebar-item" href="#programs" onclick="goTo('programs')"><span class="si">🏫</span> School Programs</a>
+    <a class="sidebar-item" href="#lexia" onclick="goTo('lexia')"><span class="si">📖</span> Lexia</a>
+    <a class="sidebar-item" href="#renaissance" onclick="goTo('renaissance')"><span class="si">🌟</span> Renaissance</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content" id="main-content">
+
+    <!-- HERO -->
+    <!-- FAVORITES -->
+    <div id="favorites" class="section">
+      <div class="section-head">
+        <h2>❤️ Favorites</h2>
+        <div class="section-head-line"></div>
+      </div>
+      <div class="tile-grid" id="grid-favorites">
+        <span id="favorites-empty">Heart any tool to pin it here!</span>
+      </div>
+    </div>
+
+    <!-- GRADES -->
+    <div id="grades" class="section">
+      <div class="section-head">
+        <h2>📊 Grades &amp; School Portal</h2>
+        <div class="section-head-line"></div>
+        <div class="section-count" id="count-grades"></div>
+      </div>
+      <div class="tile-grid" id="grid-grades"></div>
+    </div>
+
+    <!-- QUICK ACCESS -->
+    <div class="section">
+      <div class="section-head">
+        <h2>⚡ Quick Access</h2>
+        <div class="section-head-line"></div>
+      </div>
+      <div class="quick-bar" id="quick-bar"></div>
+    </div>
+
+    <!-- STUDY -->
+    <div id="study" class="section">
+      <div class="section-head"><h2>📚 Study Tools</h2><div class="section-head-line"></div><div class="section-count" id="count-study"></div></div>
+      <div class="tile-grid" id="grid-study"></div>
+    </div>
+
+    <!-- MATH -->
+    <div id="math" class="section">
+      <div class="section-head"><h2>🧮 Math</h2><div class="section-head-line"></div><div class="section-count" id="count-math"></div></div>
+      <div class="tile-grid" id="grid-math"></div>
+    </div>
+
+    <!-- SCIENCE -->
+    <div id="science" class="section">
+      <div class="section-head"><h2>🔬 Science</h2><div class="section-head-line"></div><div class="section-count" id="count-science"></div></div>
+      <div class="tile-grid" id="grid-science"></div>
+    </div>
+
+    <!-- WRITING -->
+    <div id="writing" class="section">
+      <div class="section-head"><h2>✍️ Writing &amp; Grammar</h2><div class="section-head-line"></div><div class="section-count" id="count-writing"></div></div>
+      <div class="tile-grid" id="grid-writing"></div>
+    </div>
+
+    <!-- RESEARCH -->
+    <div id="research" class="section">
+      <div class="section-head"><h2>🔎 Research</h2><div class="section-head-line"></div><div class="section-count" id="count-research"></div></div>
+      <div class="tile-grid" id="grid-research"></div>
+    </div>
+
+    <!-- CODING -->
+    <div id="coding" class="section">
+      <div class="section-head"><h2>💻 Coding &amp; Tech</h2><div class="section-head-line"></div><div class="section-count" id="count-coding"></div></div>
+      <div class="tile-grid" id="grid-coding"></div>
+    </div>
+
+    <!-- LANGUAGE -->
+    <div id="language" class="section">
+      <div class="section-head"><h2>🌍 Language</h2><div class="section-head-line"></div><div class="section-count" id="count-language"></div></div>
+      <div class="tile-grid" id="grid-language"></div>
+    </div>
+
+    <!-- CREATIVE -->
+    <div id="creative" class="section">
+      <div class="section-head"><h2>🎨 Creative &amp; Design</h2><div class="section-head-line"></div><div class="section-count" id="count-creative"></div></div>
+      <div class="tile-grid" id="grid-creative"></div>
+    </div>
+
+    <!-- GOOGLE APPS -->
+    <div id="google" class="section">
+      <div class="section-head"><h2>🔵 Google Apps</h2><div class="section-head-line"></div><div class="section-count" id="count-google"></div></div>
+      <div class="tile-grid" id="grid-google"></div>
+    </div>
+
+    <!-- VIDEO & MEDIA -->
+    <div id="video" class="section">
+      <div class="section-head"><h2>▶️ Video &amp; Media</h2><div class="section-head-line"></div><div class="section-count" id="count-video"></div></div>
+      <div class="tile-grid" id="grid-video"></div>
+    </div>
+
+    <!-- LEARNING GAMES -->
+    <div id="games" class="section">
+      <div class="section-head"><h2>🎮 Learning Games</h2><div class="section-head-line"></div><div class="section-count" id="count-games"></div></div>
+      <div class="tile-grid" id="grid-games"></div>
+    </div>
+
+    <!-- SCHOOL PROGRAMS -->
+    <div id="programs" class="section">
+      <div class="section-head"><h2>🏫 School Programs</h2><div class="section-head-line"></div><div class="section-count" id="count-programs"></div></div>
+      <div class="tile-grid" id="grid-programs"></div>
+    </div>
+
+    <!-- LEXIA -->
+    <div id="lexia" class="section">
+      <div class="section-head"><h2>📖 Lexia</h2><div class="section-head-line"></div><div class="section-count" id="count-lexia"></div></div>
+      <div class="tile-grid" id="grid-lexia"></div>
+    </div>
+
+    <!-- RENAISSANCE -->
+    <div id="renaissance" class="section">
+      <div class="section-head"><h2>🌟 Renaissance</h2><div class="section-head-line"></div><div class="section-count" id="count-renaissance"></div></div>
+      <div class="tile-grid" id="grid-renaissance"></div>
+    </div>
+
+    <div id="no-results" style="display:none;text-align:center;padding:56px 20px;color:#1d4ed8;font-size:1rem;">
+      🔍 No results found — try a different search!
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  © 2026 <button class="brand-link" onclick="openAdminLogin()" title="">Talona14Studios</button>
+  &nbsp;·&nbsp; <strong>StudyNest</strong> — Oklahoma Student Learning Hub
+</footer>
+
+<button class="scroll-top" id="scroll-top" onclick="scrollToTop()" title="Back to top">↑</button>
+
+<!-- ─── ADMIN LOGIN MODAL ─── -->
+<div class="admin-overlay" id="admin-overlay">
+  <div class="admin-modal">
+    <button class="admin-close" onclick="closeAdminLogin()">✕</button>
+    <div class="admin-modal-logo">
+      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ag1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2563eb"/>
+            <stop offset="100%" stop-color="#60a5fa"/>
+          </linearGradient>
+        </defs>
+        <circle cx="26" cy="26" r="24" fill="rgba(29,78,216,0.12)" stroke="rgba(29,78,216,0.3)" stroke-width="1.5"/>
+        <polygon points="26,11 38,18 26,25 14,18" fill="url(#ag1)"/>
+        <rect x="35" y="18" width="2.5" height="8" rx="1.2" fill="rgba(255,255,255,0.4)"/>
+        <circle cx="36.25" cy="27.5" r="2.5" fill="rgba(255,255,255,0.35)"/>
+        <rect x="18" y="28" width="16" height="11" rx="2.5" fill="rgba(29,78,216,0.35)" stroke="rgba(96,165,250,0.4)" stroke-width="1.2"/>
+        <line x1="26" y1="29" x2="26" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      </svg>
+    </div>
+    <h2>Student Administrator</h2>
+    <div class="admin-sub">Talona14Studios — Secure Portal</div>
+    <div class="admin-field">
+      <label>Username</label>
+      <input type="text" id="admin-user" placeholder="Enter username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="admin-field">
+      <label>Password</label>
+      <input type="password" id="admin-pass" placeholder="Enter password" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="admin-error" id="admin-error"></div>
+    <button class="admin-btn" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- ─── ADMIN PANEL ─── -->
+<div class="admin-panel-overlay" id="admin-panel">
+  <nav class="admin-panel-nav">
+    <div class="admin-panel-nav-logo">
+      <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" rx="9" fill="rgba(29,78,216,0.25)" stroke="rgba(96,165,250,0.3)" stroke-width="1"/>
+        <polygon points="18,7 28,13 18,19 8,13" fill="#60a5fa" opacity="0.95"/>
+        <rect x="11" y="21" width="14" height="9" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+        <line x1="18" y1="21.5" x2="18" y2="29.5" stroke="rgba(255,255,255,0.3)" stroke-width="0.9"/>
+      </svg>
+    </div>
+    <div class="admin-panel-nav-title">Student <span>Administrator</span></div>
+    <div class="admin-nav-spacer"></div>
+    <button class="admin-panel-close-btn" onclick="closeAdminPanel()">✕ Exit Portal</button>
+  </nav>
+  <div class="admin-panel-body">
+    <div class="admin-welcome">
+      <h1>🎓 Oklahoma Student Dashboard</h1>
+      <p>Administrator view — all resources, portals, and tools available to Oklahoma students in one place.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="admin-card-icon">📊</div>
+        <h3>Grade Portals</h3>
+        <p>PowerSchool, Skyward, Infinite Campus, Canvas, Blackboard &amp; more active school portals.</p>
+        <div class="admin-stat-badge">10 Portals</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-icon">📚</div>
+        <h3>Learning Tools</h3>
+        <p>100+ curated tools across math, science, writing, coding, language, and creative arts.</p>
+        <div class="admin-stat-badge">100+ Tools</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-icon">🏫</div>
+        <h3>School Programs</h3>
+        <p>IXL, BrainPOP, i-Ready, Epic!, Imagine Learning, Flocabulary, Lexia, Renaissance &amp; more.</p>
+        <div class="admin-stat-badge">18 Programs</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-icon">🎮</div>
+        <h3>Learning Games</h3>
+        <p>Kahoot, Blooket, Prodigy, Gimkit, Quizizz, iCivics, Minecraft Edu and 13 more.</p>
+        <div class="admin-stat-badge">13 Games</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-icon">🔬</div>
+        <h3>STEM Resources</h3>
+        <p>PhET simulations, NASA, Desmos, GeoGebra, Wolfram Alpha, Code.org, Scratch &amp; more.</p>
+        <div class="admin-stat-badge">20+ STEM Tools</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-icon">🌟</div>
+        <h3>Renaissance Suite</h3>
+        <p>Renaissance login, Accelerated Reader, Star Reading, Star Math — all reading &amp; math assessments.</p>
+        <div class="admin-stat-badge">4 Programs</div>
+      </div>
+    </div>
+
+    <!-- Oklahoma-specific resources -->
+    <div class="admin-section-title">Oklahoma State Resources</div>
+    <div class="admin-resource-list">
+      <a class="admin-resource-item" href="https://sde.ok.gov" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🏛️</div>
+        <div><div class="admin-resource-name">Oklahoma SDE</div><div class="admin-resource-desc">State Dept. of Education</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://oklahomastandards.com" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">📋</div>
+        <div><div class="admin-resource-name">OK Academic Standards</div><div class="admin-resource-desc">Grade-level standards</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://www.okcps.org" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🏫</div>
+        <div><div class="admin-resource-name">OKCPS Portal</div><div class="admin-resource-desc">OKC Public Schools</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://libraries.ok.gov" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">📖</div>
+        <div><div class="admin-resource-name">OK State Library</div><div class="admin-resource-desc">Digital library resources</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://maps.sde.ok.gov/schoolfinder" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">📍</div>
+        <div><div class="admin-resource-name">School Finder</div><div class="admin-resource-desc">Find Oklahoma schools</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://www.okcollegestart.org" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🎓</div>
+        <div><div class="admin-resource-name">OK College Start</div><div class="admin-resource-desc">College &amp; career planning</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://www.osrhe.edu" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🏛️</div>
+        <div><div class="admin-resource-name">OSRHE</div><div class="admin-resource-desc">Higher education resources</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://okfutures.net" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🚀</div>
+        <div><div class="admin-resource-name">OK Futures</div><div class="admin-resource-desc">Student scholarship info</div></div>
+      </a>
+    </div>
+
+    <!-- Testing & Assessment -->
+    <div class="admin-section-title">Testing &amp; Assessment Portals</div>
+    <table class="admin-ok-table">
+      <thead>
+        <tr>
+          <th>Portal</th>
+          <th>Purpose</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>OSTP (Oklahoma School Testing Program)</td><td>State standardized testing</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>Renaissance Star Reading</td><td>Reading level assessment</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>Renaissance Star Math</td><td>Math level assessment</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>Accelerated Reader (AR)</td><td>Reading comprehension quizzes</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>i-Ready Diagnostic</td><td>Reading &amp; math diagnostics</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>Lexia RAPID Assessment</td><td>Literacy screening</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>IXL Diagnostics</td><td>Math &amp; ELA skills assessment</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>Edulastic</td><td>Formative &amp; summative assessment</td><td><span class="ok-badge">Active</span></td></tr>
+        <tr><td>LinkIt!</td><td>Benchmark testing</td><td><span class="warn-badge">Check Access</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- Support Contacts -->
+    <div class="admin-section-title">Student Support Resources</div>
+    <div class="admin-resource-list">
+      <a class="admin-resource-item" href="https://www.oklahomahelpline.com" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">📞</div>
+        <div><div class="admin-resource-name">OK Helpline</div><div class="admin-resource-desc">Crisis support 1-800-522-9054</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://www.211oklahoma.org" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🤝</div>
+        <div><div class="admin-resource-name">211 Oklahoma</div><div class="admin-resource-desc">Community resources</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://www.okdhs.org" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🛡️</div>
+        <div><div class="admin-resource-name">OK DHS</div><div class="admin-resource-desc">Human services support</div></div>
+      </a>
+      <a class="admin-resource-item" href="https://sde.ok.gov/meal-programs" target="_blank" rel="noopener">
+        <div class="admin-resource-icon">🍎</div>
+        <div><div class="admin-resource-name">Meal Programs</div><div class="admin-resource-desc">Student nutrition resources</div></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// APP DATA
+// ─────────────────────────────────────────────
+const APPS = {
+  grades: [
+    { name:'PowerSchool',    domain:'powerschool.com',    bg:'#c0392b', url:'https://www.powerschool.com/find-your-school/' },
+    { name:'Clever',         domain:'clever.com',         bg:'#1565c0', url:'https://clever.com/in/school' },
+    { name:'Schoology',      domain:'schoology.com',      bg:'#1a73e8', url:'https://www.schoology.com' },
+    { name:'Canvas',         domain:'canvas.instructure.com', bg:'#e66000', url:'https://canvas.instructure.com' },
+    { name:'Google Class.',  domain:'classroom.google.com',bg:'#1e8e3e', url:'https://classroom.google.com', key:'Google Classroom' },
+    { name:'Remind',         domain:'remind.com',         bg:'#0057b8', url:'https://www.remind.com' },
+    { name:'ClassDojo',      domain:'classdojo.com',      bg:'#2dc653', url:'https://www.classdojo.com' },
+    { name:'Infinite Campus',domain:'infinitecampus.com', bg:'#0f4880', url:'https://www.infinitecampus.com' },
+    { name:'Skyward',        domain:'skyward.com',        bg:'#005a9c', url:'https://www.skyward.com' },
+    { name:'Blackboard',     domain:'blackboard.com',     bg:'#cc0000', url:'https://www.blackboard.com' },
+    { name:'Seesaw',         domain:'web.seesaw.me',      bg:'#f05a28', url:'https://web.seesaw.me' },
+  ],
+  quick: [
+    { name:'Google',         domain:'google.com',         url:'https://www.google.com' },
+    { name:'Wolfram Alpha',  domain:'wolframalpha.com',   url:'https://www.wolframalpha.com' },
+    { name:'Desmos',         domain:'desmos.com',         url:'https://www.desmos.com/calculator' },
+    { name:'Dictionary',     domain:'dictionary.com',     url:'https://www.dictionary.com' },
+    { name:'Thesaurus',      domain:'thesaurus.com',      url:'https://www.thesaurus.com' },
+    { name:'Wikipedia',      domain:'wikipedia.org',      url:'https://www.wikipedia.org' },
+    { name:'Google Translate',domain:'translate.google.com', url:'https://translate.google.com' },
+    { name:'Grammarly',      domain:'grammarly.com',      url:'https://app.grammarly.com' },
+    { name:'Timer Tab',      domain:'timer.tab',          url:'https://www.timer.tab' },
+  ],
+  study: [
+    { name:'Khan Academy',   domain:'khanacademy.org',    bg:'#14a800', url:'https://www.khanacademy.org' },
+    { name:'Quizlet',        domain:'quizlet.com',        bg:'#4257b2', url:'https://quizlet.com' },
+    { name:'Anki',           domain:'ankiweb.net',        bg:'#0075c1', url:'https://ankiweb.net' },
+    { name:'Coursera',       domain:'coursera.org',       bg:'#0056d2', url:'https://www.coursera.org' },
+    { name:'SparkNotes',     domain:'sparknotes.com',     bg:'#f4a127', url:'https://www.sparknotes.com' },
+    { name:'Brainly',        domain:'brainly.com',        bg:'#7c4dff', url:'https://brainly.com' },
+    { name:'Socratic',       domain:'socratic.org',       bg:'#4285f4', url:'https://socratic.org' },
+    { name:'Shmoop',         domain:'shmoop.com',         bg:'#e63946', url:'https://www.shmoop.com' },
+    { name:'StudySmarter',   domain:'studysmarter.us',    bg:'#12b886', url:'https://www.studysmarter.us' },
+    { name:'Chegg',          domain:'chegg.com',          bg:'#ff5a00', url:'https://www.chegg.com' },
+    { name:'Cliffs Notes',   domain:'cliffsnotes.com',    bg:'#ffd000', url:'https://www.cliffsnotes.com' },
+    { name:'Course Hero',    domain:'coursehero.com',     bg:'#f5821f', url:'https://www.coursehero.com' },
+  ],
+  math: [
+    { name:'Desmos',         domain:'desmos.com',         bg:'#2a6ebb', url:'https://www.desmos.com/calculator' },
+    { name:'Wolfram Alpha',  domain:'wolframalpha.com',   bg:'#e5132d', url:'https://www.wolframalpha.com' },
+    { name:'GeoGebra',       domain:'geogebra.org',       bg:'#8abf2e', url:'https://www.geogebra.org' },
+    { name:'Mathway',        domain:'mathway.com',        bg:'#6236ff', url:'https://www.mathway.com' },
+    { name:'Math is Fun',    domain:'mathsisfun.com',     bg:'#ff6600', url:'https://www.mathsisfun.com' },
+    { name:'Photomath',      domain:'photomath.com',      bg:'#44c97d', url:'https://photomath.com' },
+    { name:'Calculator.net', domain:'calculator.net',     bg:'#0b6fcc', url:'https://www.calculator.net' },
+    { name:'Art of Problem', domain:'artofproblemsolving.com', bg:'#1a365d', url:'https://artofproblemsolving.com' },
+    { name:"Paul's Math",    domain:'tutorial.math.lamar.edu', bg:'#7b3f00', url:'https://tutorial.math.lamar.edu' },
+    { name:'Mathplanet',     domain:'mathplanet.com',     bg:'#1e3a5f', url:'https://www.mathplanet.com' },
+  ],
+  science: [
+    { name:'PhET Sims',      domain:'phet.colorado.edu',  bg:'#2e7d32', url:'https://phet.colorado.edu' },
+    { name:'Periodic Table', domain:'ptable.com',         bg:'#37474f', url:'https://ptable.com' },
+    { name:'NASA',           domain:'nasa.gov',           bg:'#0b3d91', url:'https://www.nasa.gov' },
+    { name:'Biology Online', domain:'biologyonline.com',  bg:'#388e3c', url:'https://www.biologyonline.com' },
+    { name:'Science News',   domain:'sciencenews.org',    bg:'#c0392b', url:'https://www.sciencenews.org' },
+    { name:'Visible Body',   domain:'visiblebody.com',    bg:'#e91e63', url:'https://www.visiblebody.com' },
+    { name:'HHMI BioInt.',   domain:'biointeractive.org', bg:'#00796b', url:'https://www.biointeractive.org' },
+    { name:'Chem LibreTexts',domain:'chem.libretexts.org',bg:'#6d4c41', url:'https://chem.libretexts.org' },
+    { name:'HyperPhysics',   domain:'hyperphysics.phy-astr.gsu.edu', bg:'#1a237e', url:'http://hyperphysics.phy-astr.gsu.edu' },
+    { name:'Khan Bio',       domain:'khanacademy.org',    bg:'#1b5e20', url:'https://www.khanacademy.org/science/biology', label:'Khan Biology' },
+    { name:'Exploratorium',  domain:'exploratorium.edu',  bg:'#bf360c', url:'https://www.exploratorium.edu' },
+  ],
+  writing: [
+    { name:'Grammarly',      domain:'grammarly.com',      bg:'#15c39a', url:'https://app.grammarly.com' },
+    { name:'Hemingway',      domain:'hemingwayapp.com',   bg:'#e74c3c', url:'https://hemingwayapp.com' },
+    { name:'Thesaurus',      domain:'thesaurus.com',      bg:'#e67e22', url:'https://www.thesaurus.com' },
+    { name:'Dictionary',     domain:'dictionary.com',     bg:'#2980b9', url:'https://www.dictionary.com' },
+    { name:'Purdue OWL',     domain:'owl.purdue.edu',     bg:'#c28b00', url:'https://owl.purdue.edu' },
+    { name:'EasyBib',        domain:'easybib.com',        bg:'#2563eb', url:'https://www.easybib.com' },
+    { name:'Cite This 4 Me', domain:'citethisforme.com',  bg:'#8e44ad', url:'https://www.citethisforme.com' },
+    { name:'Power Thes.',    domain:'powerthesaurus.org', bg:'#16a085', url:'https://www.powerthesaurus.org' },
+    { name:'ProWritingAid',  domain:'prowritingaid.com',  bg:'#2c3e50', url:'https://prowritingaid.com' },
+    { name:'Quill.org',      domain:'quill.org',          bg:'#027360', url:'https://www.quill.org' },
+    { name:'No Red Ink',     domain:'noredink.com',       bg:'#c0392b', url:'https://www.noredink.com' },
+    { name:'ReadWorks',      domain:'readworks.org',      bg:'#0288d1', url:'https://www.readworks.org' },
+  ],
+  research: [
+    { name:'Wikipedia',      domain:'wikipedia.org',      bg:'#3d3d3d', url:'https://www.wikipedia.org' },
+    { name:'Google Scholar', domain:'scholar.google.com', bg:'#4285f4', url:'https://scholar.google.com' },
+    { name:'Britannica',     domain:'britannica.com',     bg:'#003087', url:'https://www.britannica.com' },
+    { name:'JSTOR',          domain:'jstor.org',          bg:'#6b4f3a', url:'https://www.jstor.org' },
+    { name:'Project Gutenberg',domain:'gutenberg.org',    bg:'#8b4513', url:'https://www.gutenberg.org' },
+    { name:'Internet Archive',domain:'archive.org',       bg:'#4a4a4a', url:'https://archive.org' },
+    { name:'Library of Congress',domain:'loc.gov',        bg:'#003f5c', url:'https://www.loc.gov' },
+    { name:'Smithsonian',    domain:'smithsonianmag.com', bg:'#b5451b', url:'https://www.smithsonianmag.com' },
+    { name:'World Book',     domain:'worldbookonline.com',bg:'#004080', url:'https://www.worldbookonline.com' },
+    { name:'Newsela',        domain:'newsela.com',        bg:'#0077c8', url:'https://newsela.com' },
+    { name:'CommonLit',      domain:'commonlit.org',      bg:'#0066cc', url:'https://www.commonlit.org' },
+  ],
+  coding: [
+    { name:'Replit',         domain:'replit.com',         bg:'#0d101e', url:'https://replit.com' },
+    { name:'Scratch',        domain:'scratch.mit.edu',    bg:'#ff8c1a', url:'https://scratch.mit.edu' },
+    { name:'Code.org',       domain:'code.org',           bg:'#f9a825', url:'https://code.org' },
+    { name:'freeCodeCamp',   domain:'freecodecamp.org',   bg:'#0a0a23', url:'https://www.freecodecamp.org' },
+    { name:'W3Schools',      domain:'w3schools.com',      bg:'#04aa6d', url:'https://www.w3schools.com' },
+    { name:'Codecademy',     domain:'codecademy.com',     bg:'#1f4056', url:'https://www.codecademy.com' },
+    { name:'CS50 Harvard',   domain:'cs50.harvard.edu',   bg:'#a51c30', url:'https://cs50.harvard.edu' },
+    { name:'MIT OpenCW',     domain:'ocw.mit.edu',        bg:'#8c001a', url:'https://ocw.mit.edu' },
+    { name:'Tynker',         domain:'tynker.com',         bg:'#ff4081', url:'https://www.tynker.com' },
+    { name:'Hour of Code',   domain:'hourofcode.com',     bg:'#0076d1', url:'https://hourofcode.com' },
+    { name:'CodeHS',         domain:'codehs.com',         bg:'#00a6fb', url:'https://codehs.com' },
+    { name:'p5.js',          domain:'editor.p5js.org',    bg:'#ed225d', url:'https://editor.p5js.org' },
+  ],
+  language: [
+    { name:'Duolingo',       domain:'duolingo.com',       bg:'#58cc02', url:'https://www.duolingo.com' },
+    { name:'Google Translate',domain:'translate.google.com',bg:'#4285f4', url:'https://translate.google.com' },
+    { name:'SpanishDict',    domain:'spanishdict.com',    bg:'#0072c6', url:'https://www.spanishdict.com' },
+    { name:'Forvo',          domain:'forvo.com',          bg:'#e74c3c', url:'https://forvo.com' },
+    { name:'Babbel',         domain:'babbel.com',         bg:'#5a7b00', url:'https://www.babbel.com' },
+    { name:'Etymonline',     domain:'etymonline.com',     bg:'#5d4037', url:'https://www.etymonline.com' },
+    { name:'Lingvist',       domain:'lingvist.com',       bg:'#00bcd4', url:'https://lingvist.com' },
+    { name:'Memrise',        domain:'memrise.com',        bg:'#622acd', url:'https://www.memrise.com' },
+    { name:'IXL Language',   domain:'ixl.com',            bg:'#ff6a00', url:'https://www.ixl.com/ela', label:'IXL ELA' },
+    { name:'Vocabulary.com', domain:'vocabulary.com',     bg:'#2980b9', url:'https://www.vocabulary.com' },
+  ],
+  creative: [
+    { name:'Canva',          domain:'canva.com',          bg:'#00c4cc', url:'https://www.canva.com' },
+    { name:'Adobe Express',  domain:'adobe.com',          bg:'#ff0000', url:'https://www.adobe.com/express' },
+    { name:'Pixlr',          domain:'pixlr.com',          bg:'#00aaff', url:'https://pixlr.com' },
+    { name:'AutoDraw',       domain:'autodraw.com',       bg:'#4285f4', url:'https://www.autodraw.com' },
+    { name:'Flat.io',        domain:'flat.io',            bg:'#f72585', url:'https://flat.io' },
+    { name:'Unsplash',       domain:'unsplash.com',       bg:'#111111', url:'https://unsplash.com' },
+    { name:'Google Drawings',domain:'docs.google.com',    bg:'#e57373', url:'https://docs.google.com/drawings', label:'Drawings' },
+    { name:'Sketchpad',      domain:'sketch.io',          bg:'#ff7043', url:'https://sketch.io/sketchpad' },
+    { name:'Soundtrap',      domain:'soundtrap.com',      bg:'#1db954', url:'https://www.soundtrap.com' },
+    { name:'BandLab',        domain:'bandlab.com',        bg:'#e63946', url:'https://www.bandlab.com' },
+    { name:'Chrome Music Lab',domain:'musiclab.chromeexperiments.com', bg:'#4285f4', url:'https://musiclab.chromeexperiments.com', label:'Music Lab' },
+  ],
+  google: [
+    { name:'Google Docs',      domain:'docs.google.com',       bg:'#f6f6f6', url:'https://docs.google.com', label:'Docs' },
+    { name:'Google Slides',    domain:'slides.google.com',     bg:'#ffffff', url:'https://slides.google.com', label:'Slides' },
+    { name:'Google Sheets',    domain:'sheets.google.com',     bg:'#ffffff', url:'https://sheets.google.com', label:'Sheets' },
+    { name:'Google Drive',     domain:'drive.google.com',      bg:'#ffffff', url:'https://drive.google.com', label:'Drive' },
+    { name:'Google Classroom', domain:'classroom.google.com',  bg:'#ffffff', url:'https://classroom.google.com', label:'Classroom' },
+    { name:'Gmail',            domain:'mail.google.com',       bg:'#ffffff', url:'https://mail.google.com', label:'Gmail' },
+    { name:'Google Calendar',  domain:'calendar.google.com',   bg:'#ffffff', url:'https://calendar.google.com', label:'Calendar' },
+    { name:'Google Forms',     domain:'forms.google.com',      bg:'#ffffff', url:'https://forms.google.com', label:'Forms' },
+    { name:'Google Meet',      domain:'meet.google.com',       bg:'#ffffff', url:'https://meet.google.com', label:'Meet' },
+    { name:'Google Sites',     domain:'sites.google.com',      bg:'#ffffff', url:'https://sites.google.com', label:'Sites' },
+    { name:'YouTube',          domain:'youtube.com',           bg:'#ffffff', url:'https://www.youtube.com', label:'YouTube' },
+    { name:'Google Maps',      domain:'maps.google.com',       bg:'#ffffff', url:'https://maps.google.com', label:'Maps' },
+  ],
+  video: [
+    { name:'YouTube Edu',    domain:'youtube.com',        bg:'#cc0000', url:'https://www.youtube.com/education', label:'YouTube Edu' },
+    { name:'CrashCourse',    domain:'thecrashcourse.com', bg:'#2d2d2d', url:'https://thecrashcourse.com' },
+    { name:'TED-Ed',         domain:'ed.ted.com',         bg:'#e62b1e', url:'https://ed.ted.com' },
+    { name:'PBS Learning',   domain:'pbslearningmedia.org',bg:'#1565c0', url:'https://pbslearningmedia.org', label:'PBS Learning' },
+    { name:'National Geo',   domain:'nationalgeographic.com', bg:'#f9a825', url:'https://www.nationalgeographic.com', label:'Nat Geo' },
+    { name:'Smithsonian Ch.',domain:'smithsonianmag.com', bg:'#b5451b', url:'https://www.smithsonianmag.com/video', label:'Smithsonian Ch.' },
+    { name:'Discovery Edu',  domain:'discoveryeducation.com', bg:'#003087', url:'https://www.discoveryeducation.com', label:'Discovery Edu' },
+    { name:'History Channel',domain:'history.com',        bg:'#1a1a1a', url:'https://www.history.com/videos', label:'History' },
+    { name:'Vimeo',          domain:'vimeo.com',          bg:'#19b7ea', url:'https://vimeo.com' },
+  ],
+  games: [
+    { name:'Kahoot!',        domain:'kahoot.com',         bg:'#46178f', url:'https://kahoot.com' },
+    { name:'Blooket',        domain:'blooket.com',        bg:'#2faee0', url:'https://www.blooket.com' },
+    { name:'Quizizz',        domain:'quizizz.com',        bg:'#8854d0', url:'https://quizizz.com' },
+    { name:'Gimkit',         domain:'gimkit.com',         bg:'#f7c948', url:'https://www.gimkit.com' },
+    { name:'Prodigy Math',   domain:'prodigygame.com',    bg:'#7b2d8b', url:'https://www.prodigygame.com', label:'Prodigy' },
+    { name:'Boddle',         domain:'boddlelearning.com', bg:'#ff6b35', url:'https://www.boddlelearning.com' },
+    { name:'99math',         domain:'99math.com',         bg:'#1b998b', url:'https://99math.com' },
+    { name:'DragonBox',      domain:'dragonbox.com',      bg:'#8b1a1a', url:'https://dragonbox.com' },
+    { name:'iCivics',        domain:'icivics.org',        bg:'#b22222', url:'https://www.icivics.org' },
+    { name:'Minecraft Edu',  domain:'education.minecraft.net', bg:'#5c8a00', url:'https://education.minecraft.net', label:'Minecraft Edu' },
+    { name:'Typing.com',     domain:'typing.com',         bg:'#2563eb', url:'https://www.typing.com' },
+    { name:'Nitro Type',     domain:'nitrotype.com',      bg:'#1a1a2e', url:'https://www.nitrotype.com', label:'Nitro Type' },
+    { name:'Arcademics',     domain:'arcademics.com',     bg:'#e63946', url:'https://www.arcademics.com' },
+  ],
+  programs: [
+    { name:'IXL',            domain:'ixl.com',            bg:'#ff6a00', url:'https://www.ixl.com', label:'IXL Learning' },
+    { name:'Epic! Books',    domain:'getepic.com',        bg:'#00b4d8', url:'https://www.getepic.com', label:'Epic! Books' },
+    { name:'BrainPOP',       domain:'brainpop.com',       bg:'#00a6e0', url:'https://www.brainpop.com' },
+    { name:'Nearpod',        domain:'nearpod.com',        bg:'#f05a28', url:'https://nearpod.com' },
+    { name:'Pear Deck',      domain:'peardeck.com',       bg:'#3cb878', url:'https://www.peardeck.com' },
+    { name:'Padlet',         domain:'padlet.com',         bg:'#ff6b6b', url:'https://padlet.com' },
+    { name:'Edulastic',      domain:'edulastic.com',      bg:'#1cb0f6', url:'https://edulastic.com' },
+    { name:'Imagine Learning',domain:'imaginelearning.com',bg:'#e31837', url:'https://www.imaginelearning.com', label:'Imagine Learn.' },
+    { name:'i-Ready',        domain:'i-ready.com',        bg:'#0047ba', url:'https://login.i-ready.com' },
+    { name:'Flocabulary',    domain:'flocabulary.com',    bg:'#ff4500', url:'https://www.flocabulary.com' },
+    { name:'Skill Struck',   domain:'skillstruck.com',    bg:'#f97316', url:'https://www.skillstruck.com', label:'Skill Struck' },
+    { name:'Minga',          domain:'minga.io',           bg:'#5c4de5', url:'https://minga.io' },
+    { name:'LinkIt!',        domain:'linkit.com',         bg:'#e63946', url:'https://www.linkit.com' },
+    { name:'Wayground',      domain:'wayground.com',      bg:'#1d4ed8', url:'https://wayground.com' },
+  ],
+  lexia: [
+    { name:'Lexia Core5',    domain:'lexialearning.com',  bg:'#0047ab', url:'https://www.lexialearning.com/core5', label:'Core5' },
+    { name:'Lexia PowerUp',  domain:'lexialearning.com',  bg:'#1565c0', url:'https://www.lexialearning.com/powerup', label:'PowerUp Literacy' },
+    { name:'Lexia English',  domain:'lexialearning.com',  bg:'#1976d2', url:'https://www.lexialearning.com/lexia-english', label:'Lexia English' },
+    { name:'Lexia RAPID',    domain:'lexialearning.com',  bg:'#0d47a1', url:'https://www.lexialearning.com/rapid', label:'RAPID Assessment' },
+  ],
+  renaissance: [
+    { name:'Renaissance',        domain:'renaissance.com', bg:'#1b5e20', url:'https://login.renaissance.com/', label:'Renaissance Login' },
+    { name:'Accelerated Reader', domain:'renaissance.com', bg:'#2e7d32', url:'https://ar.renaissance.com/', label:'Accel. Reader' },
+    { name:'Star Reading',       domain:'renaissance.com', bg:'#388e3c', url:'https://star.renaissance.com/', label:'Star Reading' },
+    { name:'Star Math',          domain:'renaissance.com', bg:'#43a047', url:'https://star.renaissance.com/math', label:'Star Math' },
+  ],
+};
+
+// ── GOOGLE APP INLINE SVG ICONS ──
+const GOOGLE_ICONS = {
+  'Google Docs':     `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M28 3H12a3 3 0 00-3 3v36a3 3 0 003 3h24a3 3 0 003-3V18L28 3z" fill="#4285f4"/><path d="M28 3v15h15L28 3z" fill="#a8c7fa"/><rect x="15" y="24" width="18" height="2.5" rx="1.25" fill="white"/><rect x="15" y="29.5" width="18" height="2.5" rx="1.25" fill="white"/><rect x="15" y="35" width="12" height="2.5" rx="1.25" fill="white"/></svg>`,
+  'Google Slides':   `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M28 3H12a3 3 0 00-3 3v36a3 3 0 003 3h24a3 3 0 003-3V18L28 3z" fill="#f4b400"/><path d="M28 3v15h15L28 3z" fill="#fde899"/><rect x="14" y="22" width="20" height="14" rx="2" fill="white"/><rect x="16" y="24" width="16" height="10" rx="1" fill="#f4b400" opacity=".3"/></svg>`,
+  'Google Sheets':   `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M28 3H12a3 3 0 00-3 3v36a3 3 0 003 3h24a3 3 0 003-3V18L28 3z" fill="#0f9d58"/><path d="M28 3v15h15L28 3z" fill="#81c995"/><line x1="15" y1="29" x2="33" y2="29" stroke="white" stroke-width="1.5"/><line x1="15" y1="34" x2="33" y2="34" stroke="white" stroke-width="1.5"/><line x1="24" y1="23" x2="24" y2="39" stroke="white" stroke-width="1.5"/><rect x="15" y="23" width="18" height="16" rx="1" fill="none" stroke="white" stroke-width="1.5"/></svg>`,
+  'Google Drive':    `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><polygon points="24,7 38,31 10,31" fill="none" stroke="#4285f4" stroke-width="3" stroke-linejoin="round"/><polygon points="5,31 16,31 10,41 5,31" fill="#34a853"/><polygon points="32,31 43,31 37,41 10,41" fill="#fbbc04"/><polygon points="24,7 38,31 32,31 18,31" fill="#4285f4" opacity=".6"/></svg>`,
+  'Google Calendar': `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="10" width="36" height="32" rx="3" fill="white" stroke="#dadce0" stroke-width="2"/><rect x="6" y="10" width="36" height="10" rx="3" fill="#1a73e8"/><rect x="6" y="16" width="36" height="4" fill="#1a73e8"/><line x1="16" y1="8" x2="16" y2="14" stroke="#1a73e8" stroke-width="2.5" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="14" stroke="#1a73e8" stroke-width="2.5" stroke-linecap="round"/><text x="24" y="37" font-family="Arial" font-size="13" font-weight="bold" fill="#1a73e8" text-anchor="middle">31</text></svg>`,
+  'Google Forms':    `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M28 3H12a3 3 0 00-3 3v36a3 3 0 003 3h24a3 3 0 003-3V18L28 3z" fill="#7248b9"/><path d="M28 3v15h15L28 3z" fill="#c7aeea"/><circle cx="17" cy="25" r="2" fill="white"/><rect x="21" y="23.5" width="11" height="3" rx="1.5" fill="white"/><circle cx="17" cy="32" r="2" fill="white"/><rect x="21" y="30.5" width="11" height="3" rx="1.5" fill="white"/></svg>`,
+  'Google Meet':     `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="14" width="26" height="20" rx="3" fill="#00897b"/><polygon points="31,20 43,13 43,35 31,28" fill="#00bfa5"/></svg>`,
+  'Google Sites':    `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="8" width="38" height="32" rx="3" fill="#1a73e8"/><rect x="5" y="8" width="38" height="9" rx="3" fill="#1557b0"/><rect x="9" y="22" width="12" height="14" rx="2" fill="white" opacity=".9"/><rect x="25" y="22" width="14" height="6" rx="2" fill="white" opacity=".7"/><rect x="25" y="31" width="14" height="5" rx="2" fill="white" opacity=".7"/></svg>`,
+  'Google Classroom':`<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="8" width="40" height="32" rx="3" fill="#1e8e3e"/><rect x="4" y="8" width="40" height="7" fill="#166430"/><rect x="14" y="20" width="20" height="13" rx="2" fill="#4caf50" opacity=".5"/><circle cx="24" cy="22" r="3" fill="white"/><path d="M17 33c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="white" opacity=".9"/></svg>`,
+  'Gmail':           `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="10" width="40" height="28" rx="3" fill="white" stroke="#dadce0" stroke-width="1.5"/><polyline points="4,13 24,27 44,13" fill="none" stroke="#ea4335" stroke-width="3" stroke-linejoin="round"/></svg>`,
+  'YouTube':         `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="10" width="42" height="28" rx="8" fill="#ff0000"/><polygon points="20,17 20,31 33,24" fill="white"/></svg>`,
+  'Google Maps':     `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M24 4C16.27 4 10 10.27 10 18c0 10 14 26 14 26s14-16 14-26C38 10.27 31.73 4 24 4z" fill="#ea4335"/><circle cx="24" cy="18" r="5" fill="white"/></svg>`,
+};
+
+// ── PERSISTENCE ──
+function getFavorites(){
+  try { return JSON.parse(localStorage.getItem('sn_favorites') || '[]'); } catch{ return []; }
+}
+function saveFavorites(arr){
+  localStorage.setItem('sn_favorites', JSON.stringify(arr));
+}
+
+// ── FAVICON ──
+function fav(domain){
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+}
+
+// ── BUILD TILE ──
+function makeTile(app, inFavGrid){
+  const uniqueKey = app.key || app.name;
+  const a = document.createElement('a');
+  a.href = app.url; a.target='_blank'; a.rel='noopener noreferrer';
+  a.className='tile';
+  a.dataset.name = (app.name + ' ' + (app.label||'')).toLowerCase();
+  a.dataset.key = uniqueKey;
+
+  const icon = document.createElement('div');
+  icon.className='tile-icon';
+  icon.style.background = app.bg || '#374151';
+
+  if(GOOGLE_ICONS[app.name]){
+    const wrap = document.createElement('div');
+    wrap.style.cssText='width:60%;height:60%;display:flex;align-items:center;justify-content:center;';
+    wrap.innerHTML = GOOGLE_ICONS[app.name];
+    wrap.firstChild.style.cssText='width:100%;height:100%;';
+    icon.appendChild(wrap);
+  } else {
+    const img = document.createElement('img');
+    img.src = fav(app.domain);
+    img.alt = app.name;
+    img.onerror = () => {
+      img.remove();
+      const l = document.createElement('span');
+      l.className='fallback-letter';
+      l.textContent = app.name[0];
+      icon.appendChild(l);
+    };
+    icon.appendChild(img);
+  }
+
+  const hBtn = document.createElement('button');
+  hBtn.className='heart-btn';
+  hBtn.title='Favorite';
+  const favs = getFavorites();
+  hBtn.classList.toggle('hearted', favs.some(f => (f.key||f.name) === uniqueKey));
+  hBtn.textContent='♥';
+  hBtn.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    let favs = getFavorites();
+    const idx = favs.findIndex(f => (f.key||f.name) === uniqueKey);
+    if(idx === -1){
+      favs.push({...app, key: uniqueKey});
+      hBtn.classList.add('hearted');
+    } else {
+      favs.splice(idx, 1);
+      hBtn.classList.remove('hearted');
+      if(inFavGrid){ a.remove(); }
+      document.querySelectorAll(`.tile[data-key="${uniqueKey}"] .heart-btn`).forEach(b => b.classList.remove('hearted'));
+    }
+    saveFavorites(favs);
+    renderFavorites();
+  });
+  icon.appendChild(hBtn);
+
+  const lbl = document.createElement('div');
+  lbl.className='tile-label';
+  lbl.textContent = app.label || app.name;
+
+  a.appendChild(icon); a.appendChild(lbl);
+  return a;
+}
+
+// ── RENDER FAVORITES ──
+function renderFavorites(){
+  const grid = document.getElementById('grid-favorites');
+  const empty = document.getElementById('favorites-empty');
+  grid.querySelectorAll('.tile').forEach(t => t.remove());
+  const favs = getFavorites();
+  empty.style.display = favs.length ? 'none' : '';
+  favs.forEach(app => grid.appendChild(makeTile(app, true)));
+}
+
+// ── BUILD QUICK CHIP ──
+function makeChip(app){
+  const a = document.createElement('a');
+  a.href = app.url; a.target='_blank'; a.rel='noopener noreferrer';
+  a.className='quick-chip';
+  a.dataset.name = app.name.toLowerCase();
+  const img = document.createElement('img');
+  img.src = fav(app.domain); img.alt=app.name;
+  img.onerror = () => { img.style.display='none'; };
+  const span = document.createElement('span');
+  span.textContent = app.name;
+  a.appendChild(img); a.appendChild(span);
+  return a;
+}
+
+// ── RENDER ALL ──
+function render(){
+  renderFavorites();
+  const gGrid = document.getElementById('grid-grades');
+  APPS.grades.forEach(app => gGrid.appendChild(makeTile(app)));
+  setCount('grades', APPS.grades.length);
+
+  const qBar = document.getElementById('quick-bar');
+  APPS.quick.forEach(app => qBar.appendChild(makeChip(app)));
+
+  const map = {
+    study:'grid-study', math:'grid-math', science:'grid-science',
+    writing:'grid-writing', research:'grid-research', coding:'grid-coding',
+    language:'grid-language', creative:'grid-creative', google:'grid-google',
+    video:'grid-video', games:'grid-games', programs:'grid-programs',
+    lexia:'grid-lexia', renaissance:'grid-renaissance'
+  };
+  Object.entries(map).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if(!el || !APPS[key]) return;
+    APPS[key].forEach(app => el.appendChild(makeTile(app)));
+    setCount(key, APPS[key].length);
+  });
+}
+
+function setCount(key, n){
+  const el = document.getElementById('count-'+key);
+  if(el) el.textContent = n + ' tools';
+}
+
+render();
+
+// ── SEARCH ──
+document.getElementById('search-input').addEventListener('input', function(){
+  const q = this.value.toLowerCase().trim();
+  let anyVisible = false;
+
+  document.querySelectorAll('.tile').forEach(el => {
+    const match = !q || (el.dataset.name||'').includes(q);
+    el.style.display = match ? 'flex' : 'none';
+    if(match) anyVisible = true;
+  });
+  document.querySelectorAll('.quick-chip').forEach(el => {
+    el.style.display = (!q || (el.dataset.name||'').includes(q)) ? '' : 'none';
+  });
+  document.querySelectorAll('.section').forEach(sec => {
+    if(!q){ sec.style.display=''; return; }
+    const tiles = sec.querySelectorAll('.tile');
+    if(!tiles.length){ sec.style.display=''; return; }
+    sec.style.display = [...tiles].some(t => t.style.display !== 'none') ? '' : 'none';
+  });
+
+  document.getElementById('no-results').style.display = (q && !anyVisible) ? 'block' : 'none';
+});
+
+// ── SIDEBAR ──
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function goTo(id){
+  const el = document.getElementById(id);
+  if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  if(window.innerWidth <= 768) toggleSidebar();
+}
+
+// ── ACTIVE SIDEBAR + SCROLL TO TOP ──
+const mainContent = document.getElementById('main-content');
+const sidebarLinks = document.querySelectorAll('.sidebar-item');
+const scrollTopBtn = document.getElementById('scroll-top');
+
+mainContent.addEventListener('scroll', () => {
+  const top = mainContent.scrollTop + 90;
+  let current = '';
+  document.querySelectorAll('.section[id]').forEach(s => {
+    if(s.offsetTop <= top) current = s.id;
+  });
+  sidebarLinks.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+  scrollTopBtn.classList.toggle('visible', mainContent.scrollTop > 300);
+});
+
+function scrollToTop(){
+  mainContent.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── ADMIN LOGIN ──
+function openAdminLogin(){
+  document.getElementById('admin-overlay').classList.add('open');
+  document.getElementById('admin-user').focus();
+  document.getElementById('admin-error').textContent = '';
+  document.getElementById('admin-user').value = '';
+  document.getElementById('admin-pass').value = '';
+}
+function closeAdminLogin(){
+  document.getElementById('admin-overlay').classList.remove('open');
+}
+function doLogin(){
+  const u = document.getElementById('admin-user').value.trim();
+  const p = document.getElementById('admin-pass').value;
+  const errEl = document.getElementById('admin-error');
+  const _u = atob('NjI5NDg=');
+  const _p = atob('NTI2TGFiNis=');
+  if(u === _u && p === _p){
+    closeAdminLogin();
+    document.getElementById('admin-panel').classList.add('open');
+  } else {
+    errEl.textContent = 'Invalid credentials. Please try again.';
+    document.getElementById('admin-pass').value = '';
+    document.getElementById('admin-pass').focus();
+  }
+}
+function closeAdminPanel(){
+  document.getElementById('admin-panel').classList.remove('open');
+}
+
+// close modal on overlay click
+document.getElementById('admin-overlay').addEventListener('click', function(e){
+  if(e.target === this) closeAdminLogin();
+});
+</script>
+</body>
+</html>
